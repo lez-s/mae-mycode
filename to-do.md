@@ -1,0 +1,2 @@
+- 0 shot score, train on imageNet test on PCAS 
+- how to train a mask network?
