@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import requests
 
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 def prepare_model(chkpt_dir, arch='mae_vit_large_patch16'):
     # build model
     model = getattr(models_mae, arch)()
@@ -70,7 +73,8 @@ def run_one_image(img, model):
 
     plt.show()
 
-chkpt_dir = 'C:/Users/lewa/Documents/PhD/Models/mae_visualize_vit_large_ganloss.pth'
+# chkpt_dir = 'C:/Users/lewa/Documents/PhD/Models/mae_visualize_vit_large_ganloss.pth'
+chkpt_dir = 'C:/Users/lewa/Documents/PhD/Models/softmlpmask-81/checkpoint.pth'
 model_mae = prepare_model(chkpt_dir, 'mae_vit_large_patch16')
 # load an image
 img_url = 'https://user-images.githubusercontent.com/11435359/147738734-196fd92f-9260-48d5-ba7e-bf103d29364d.jpg' # fox, from ILSVRC2012_val_00046145
@@ -78,7 +82,7 @@ img_url = 'https://user-images.githubusercontent.com/11435359/147738734-196fd92f
 img = Image.open(requests.get(img_url, stream=True).raw)
 img = img.resize((224, 224))
 img = np.array(img) / 255.
-plt.imshow(img)
-plt.show()
-sys.exit()
-run_one_image(img, model_mae)
+
+model_mae.mask_type='mlpsoft'
+model_mae.eval()
+tmp = run_one_image(img, model_mae)
